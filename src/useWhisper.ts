@@ -32,6 +32,7 @@ const defaultConfig: UseWhisperConfig = {
   timeSlice: 1_000,
   onDataAvailable: undefined,
   onTranscribe: undefined,
+  maxChunks: undefined,
 }
 
 /**
@@ -63,6 +64,7 @@ export const useWhisper: UseWhisperHook = (config) => {
     stopTimeout,
     streaming,
     timeSlice,
+    maxChunks,
     whisperConfig,
     onDataAvailable: onDataAvailableCallback,
     onTranscribe: onTranscribeCallback,
@@ -466,6 +468,11 @@ export const useWhisper: UseWhisperHook = (config) => {
           const mp3chunk = encoder.current.encodeBuffer(new Int16Array(buffer))
           const mp3blob = new Blob([mp3chunk], { type: 'audio/mpeg' })
           chunks.current.push(mp3blob)
+          const len = chunks.current.length
+
+          if (maxChunks && len > maxChunks) {
+            chunks.current.splice(0, len - maxChunks)
+          }
         }
         const recorderState = await recorder.current.getState()
         if (recorderState === 'recording') {

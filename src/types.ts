@@ -8,6 +8,7 @@ export type UseWhisperConfig = {
   stopTimeout?: number
   streaming?: boolean
   timeSlice?: number
+  maxChunks?: number
   whisperConfig?: WhisperApiConfig
   onDataAvailable?: (blob: Blob) => void
   onTranscribe?: (blob: Blob) => Promise<UseWhisperTranscript>
